@@ -43,10 +43,6 @@ def binarySearch(input, end):
         return int(len(input) / 2) + binarySearch(input[mid:], end)
 
 
-def strassen(b, c):
-    print()
-
-
 def bigIntMult(u, v):
     n = max(math.ceil(math.log(u + 0.1, 10)), math.ceil(math.log(v + 0.1, 10)))
     if n < 3:
@@ -102,6 +98,36 @@ def turnSquare(a, l):
     return zero
 
 
+def bino_rec(n, k):
+    if k == 0 or n == k:
+        return 1
+    return bino(n - 1, k - 1) + bino(n - 1, k)
+
+
+def bino(n, k):
+    result = np.zeros((n+1, k+1))
+    for i in range(0, n+1):
+        for j in range(0, min(k, i)+1):
+            if j == 0 or i == j:
+                result[i][j] = 1
+            else:
+                result[i][j] = result[i-1][j-1] + result[i-1][j]
+    print(result)
+    return result[n][k]
+
+
+def fibo(n):
+    result = [0]*n
+    for i in range(0, n):
+        if i < 2:
+            result[i] = 1
+        else:
+            result[i] = result[i-1]+result[i-2]
+    print(result)
+    return result[n-1]
+
+
+
 if __name__ == "__main__":
     a = [[4, 2, 6, 7], [6, 7, 8, 1], [4, 5, 4, 2]]
     b = [[4, 6], [6, 1]]
@@ -109,4 +135,5 @@ if __name__ == "__main__":
     b = turnSquare(b, len(a))
     if len(a) != len(b):
         exit(-1)
-    print(strassen(a, b))
+    # print(strassen(a, b))
+    print(fibo(15))
