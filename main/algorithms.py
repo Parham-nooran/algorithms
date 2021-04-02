@@ -127,13 +127,158 @@ def fibo(n):
     return result[n-1]
 
 
+def shortestPath(w):
+    d = w
+    n = len(w)
+    p = np.empty((n, n), int)
+    p.fill(-1)
+    o = np.ones((n, n))
+    for k in range(0, n):
+        for i in range(0, n):
+            for j in range(0, n):
+                if d[i][k] + d[k][j] < d[i][j]:
+                    d[i][j] = d[i][k] + d[k][j]
+                    p[i][j] = k
+    print(p + o)
+    print(d)
+
+
+def minMult(d):
+    n = len(d)-1
+    m = np.zeros((n, n))
+    p = np.zeros((n, n))
+    for diagonal in range(0, n):
+        for i in range(0, n - diagonal):
+            j = i + diagonal
+            if i == j:
+                m[i][j] = 0
+            else:
+                m[i][j] = math.inf
+                for k in range(i, j):
+                    if m[i][k] + m[k+1][j] + d[i]*d[j]*d[k] < m[i][j]:
+                        m[i][j] = m[i][k] + m[k+1][j] + d[i]*d[j+1]*d[k+1]
+                        print(str(i) + str(j) + str(k) + " : " + str(m[i][j]))
+                        p[i][j] = k
+
+    print("p is : ")
+    print(p)
+    print("m is : ")
+    print(m)
+
+
+def stoogeSort(a, i, j):
+    n = j - i + 1
+    if n <= 1:
+        return a[0]
+    if n == 2:
+        if a[i] > a[j]:
+            swap(a, i, j)
+    else:
+        m = math.floor(n/3)
+        stoogeSort(a, i, j - m)
+        stoogeSort(a, i + m, j)
+        stoogeSort(a, i, j - m)
+
+
+def maxSubArrayNaive(a):
+    maximum = a[0]
+    s = 0
+    e = 0
+    for i in range(0, len(a)):
+        sum = 0
+        for j in range(i, len(a)):
+            sum += a[j]
+            if sum > maximum:
+                maximum = sum
+                s = i
+                e = j
+    return Result(maximum, s, e)
+
+
+def maxSubArray(a):
+    pass
+
+
+class Result:
+    def __init__(self, maximum, start, end):
+        self.maximum = maximum
+        self.start = start
+        self.end = end
+
+    def __repr__(self):
+        return "Maximum sum is : " + str(self.maximum) + " start index is : " + \
+               str(self.start) + " end index is : " + str(self.end)
+
+
+def swap(a, i, j):
+    temp = a[i]
+    a[i] = a[j]
+    a[j] = temp
+
+
+def sort(input):
+    for i in range(0, len(input)):
+        for j in range(0, len(input)):
+            if input[i] < input[j]:
+                swap(input, i, j)
+
+
+class Node:
+    def __init__(self, value, left, right):
+        self.left = left
+        self.right = right
+        self.value = value
+
+    def set_right(self, right):
+        self.right = right
+
+    def set_left(self, left):
+        self.left = left
+
+    def print_instance_name(self):
+        print(self.__class__.__name__)
+
+
+def search(current, val):
+    if current is None:
+        return None
+    if current.value == val:
+        return current
+    le = search(current.left, val)
+    if le is not None:
+        return le
+    else:
+        return search(current.right, val)
+
 
 if __name__ == "__main__":
-    a = [[4, 2, 6, 7], [6, 7, 8, 1], [4, 5, 4, 2]]
-    b = [[4, 6], [6, 1]]
-    a = turnSquare(a, len(b))
-    b = turnSquare(b, len(a))
-    if len(a) != len(b):
-        exit(-1)
+    # a = [[4, 2, 6, 7], [6, 7, 8, 1], [4, 5, 4, 2]]
+    # b = [[4, 6], [6, 1]]
+    # a = turnSquare(a, len(b))
+    # b = turnSquare(b, len(a))
+    # if len(a) != len(b):
+    #     exit(-1)
     # print(strassen(a, b))
-    print(fibo(15))
+    # print(fibo(15))
+    # given = [[0, 1, math.inf, 1, 5], [9, 0, 3, 2, math.inf], [math.inf, math.inf, 0, 4, math.inf],
+    #          [math.inf, math.inf, 2, 0, 3], [3, math.inf, math.inf, math.inf, 0]]
+    # shortestPath(given)
+    # test = [20, 14, 52, 16, 37, 8, 23, 13, 64, 43, 76, 32, 21, 12, 4]
+    # stoogeSort(test, 0, len(test)-1)
+    # print(test)
+    # A = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+    # print(maxSubArray(A))
+    # d = [5, 2, 3, 4, 6, 7, 8]
+    # minMult(d)
+    er = Node(53, None, None)
+    el = Node(143, None, None)
+    dr = Node(34, None, None)
+    dl = Node(143, None, None)
+    cr = Node(14, None, None)
+    cl = Node(30, None, None)
+    br = Node(7, el, er)
+    bl = Node(42, dl, dr)
+    ar = Node(43, cl, cr)
+    al = Node(15, bl, br)
+    head = Node(22, al, ar)
+    print(search(head, 7))
