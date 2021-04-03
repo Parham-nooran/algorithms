@@ -1,5 +1,5 @@
 import math
-
+import random
 import numpy as np
 
 
@@ -81,12 +81,12 @@ def strassen(a, b):
     m3 = np.array(m3)
     m4 = np.array(m4)
     m5 = np.array(m5)
-    result = np.empty((len(m1)+len(m2), len(m3) + len(m1)), type(m1[0][0]))
+    result = np.empty((len(m1) + len(m2), len(m3) + len(m1)), type(m1[0][0]))
     result.fill(0)
     result[:int(len(m1)), :int(len(m1[0]))] = m1 + m4 - m5 + m7
-    result[:int(len(m1) ), int(len(m1[0]) ):] = m3 + m5
-    result[int(len(m1) ):, :int(len(m1[0]) )] = m2 + m4
-    result[int(len(m1) ):, int(len(m1[0]) ):] = m1 + m3 - m2 + m6
+    result[:int(len(m1)), int(len(m1[0])):] = m3 + m5
+    result[int(len(m1)):, :int(len(m1[0]))] = m2 + m4
+    result[int(len(m1)):, int(len(m1[0])):] = m1 + m3 - m2 + m6
     return result
 
 
@@ -105,26 +105,26 @@ def bino_rec(n, k):
 
 
 def bino(n, k):
-    result = np.zeros((n+1, k+1))
-    for i in range(0, n+1):
-        for j in range(0, min(k, i)+1):
+    result = np.zeros((n + 1, k + 1))
+    for i in range(0, n + 1):
+        for j in range(0, min(k, i) + 1):
             if j == 0 or i == j:
                 result[i][j] = 1
             else:
-                result[i][j] = result[i-1][j-1] + result[i-1][j]
+                result[i][j] = result[i - 1][j - 1] + result[i - 1][j]
     print(result)
     return result[n][k]
 
 
 def fibo(n):
-    result = [0]*n
+    result = [0] * n
     for i in range(0, n):
         if i < 2:
             result[i] = 1
         else:
-            result[i] = result[i-1]+result[i-2]
+            result[i] = result[i - 1] + result[i - 2]
     print(result)
-    return result[n-1]
+    return result[n - 1]
 
 
 def shortestPath(w):
@@ -144,7 +144,7 @@ def shortestPath(w):
 
 
 def minMult(d):
-    n = len(d)-1
+    n = len(d) - 1
     m = np.zeros((n, n))
     p = np.zeros((n, n))
     for diagonal in range(0, n):
@@ -155,8 +155,8 @@ def minMult(d):
             else:
                 m[i][j] = math.inf
                 for k in range(i, j):
-                    if m[i][k] + m[k+1][j] + d[i]*d[j]*d[k] < m[i][j]:
-                        m[i][j] = m[i][k] + m[k+1][j] + d[i]*d[j+1]*d[k+1]
+                    if m[i][k] + m[k + 1][j] + d[i] * d[j] * d[k] < m[i][j]:
+                        m[i][j] = m[i][k] + m[k + 1][j] + d[i] * d[j + 1] * d[k + 1]
                         print(str(i) + str(j) + str(k) + " : " + str(m[i][j]))
                         p[i][j] = k
 
@@ -174,7 +174,7 @@ def stoogeSort(a, i, j):
         if a[i] > a[j]:
             swap(a, i, j)
     else:
-        m = math.floor(n/3)
+        m = math.floor(n / 3)
         stoogeSort(a, i, j - m)
         stoogeSort(a, i + m, j)
         stoogeSort(a, i, j - m)
@@ -251,7 +251,84 @@ def search(current, val):
         return search(current.right, val)
 
 
+def partition(a, p):
+    L = []
+    R = []
+    for i in range(0, len(a)):
+        if i == p:
+            continue
+        if a[i] < a[p]:
+            L.append(a[i])
+        else:
+            R.append(a[i])
+    return L, a[p], R
+
+
+def chooseRandomPivot(n):
+    return int(random.random()*n)
+
+
+# def select(a, k):
+#     # print(f"a : {a} k : {k}")
+#     if len(a) < 10:
+#         # print("end")
+#         return mergeSort(a)[k-1]
+#     p = chooseRandomPivot(len(a))
+#     L, mid, R = partition(a, p)
+#     # print(f"p : {p}")
+#     if len(L) > k:
+#         # print(f"L : {L}", k)
+#         return select(L, k)
+#     elif len(L) == k:
+#         return mid
+#     else:
+#         # print(f"R : {R}", k - len(L) - 1)
+#         return select(R, k-len(L)-1)
+def select(a, k):
+    if len(a) < 50:
+        return mergeSort(a)[k-1]
+    p = chooseRandomPivot(len(a))
+    L, mid, R = partition(a, p)
+    if len(L) == k:
+        return mid
+    elif len(L) > k:
+        return select(L, k)
+    else:
+        return select(R, k - len(L) -1)
+
+
+def isSortedAsc(a):
+    for i in range(0, len(a)-1):
+        if a[i] > a[i + 1]:
+            return False
+    return True
+
+
+def bogoSort(a):
+    while not isSortedAsc(a):
+        random.shuffle(a)
+
+
+def quickSort(a):
+    if len(a) < 3:
+        return mergeSort(a)
+    L, mid, R = partition(a, chooseRandomPivot(len(a)))
+    return quickSort(L) + [mid] + quickSort(R)
+
+
+def random1dArray(n):
+    test = []
+    for j in range(0, n):
+        test.append(int(random.random() * 100) + 1)
+    return test
+
+
 if __name__ == "__main__":
+
+    for i in range(0, 1000):
+        if not isSortedAsc(quickSort(random1dArray(1000))):
+            print("Hell")
+
     # a = [[4, 2, 6, 7], [6, 7, 8, 1], [4, 5, 4, 2]]
     # b = [[4, 6], [6, 1]]
     # a = turnSquare(a, len(b))
@@ -270,15 +347,29 @@ if __name__ == "__main__":
     # print(maxSubArray(A))
     # d = [5, 2, 3, 4, 6, 7, 8]
     # minMult(d)
-    er = Node(53, None, None)
-    el = Node(143, None, None)
-    dr = Node(34, None, None)
-    dl = Node(143, None, None)
-    cr = Node(14, None, None)
-    cl = Node(30, None, None)
-    br = Node(7, el, er)
-    bl = Node(42, dl, dr)
-    ar = Node(43, cl, cr)
-    al = Node(15, bl, br)
-    head = Node(22, al, ar)
-    print(search(head, 7))
+    # er = Node(53, None, None)
+    # el = Node(143, None, None)
+    # dr = Node(34, None, None)
+    # dl = Node(143, None, None)
+    # cr = Node(14, None, None)
+    # cl = Node(30, None, None)
+    # br = Node(7, el, er)
+    # bl = Node(42, dl, dr)
+    # ar = Node(43, cl, cr)
+    # al = Node(15, bl, br)
+    # head = Node(22, al, ar)
+    # print(search(head, 7))
+
+
+    # for i in range(0, 1000):
+    #     k = int(random.random()*len(test))
+    #     if select(test, k) != mergeSort(test)[k-1]:
+    #         print(select(test, k), mergeSort(test)[k-1])
+    #         print(test)
+    #         print(mergeSort(test))
+
+
+    # for i in range(0, 10):
+    #     rand = int(random.random()*len(test))
+    #     print(mergeSort(test)[rand], select(test, rand))
+    #     print(mergeSort(test))
