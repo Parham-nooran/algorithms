@@ -316,19 +316,40 @@ def quickSort(a):
     return quickSort(L) + [mid] + quickSort(R)
 
 
-def random1dArray(n):
+def random1dArray(n=5):
     test = []
     for j in range(0, n):
         test.append(int(random.random() * 100) + 1)
     return test
 
 
+def countingSort(a, n=10):
+    buckets = [[] for i in range(0, 10 ** n)]
+    for i in range(0, len(a)):
+        buckets[a[i]].append(a[i])
+    result = []
+    print(buckets)
+    for i in range(0, len(a)):
+        result += buckets[i]
+    return result
+
+
+def radixSort(a, n=10):
+    result = [[] for i in range(0, 10)]
+    for i in range(0, len(a)):
+        result[a[i]%10].append(a[i])
+    print(result)
+
+
+def trySortABunch(func, inputs):
+    pass
+
+
 if __name__ == "__main__":
-
-    for i in range(0, 1000):
-        if not isSortedAsc(quickSort(random1dArray(1000))):
-            print("Hell")
-
+    test = random1dArray(10)
+    print(test)
+    print(countingSort(test, 4))
+    print(len(test), len(countingSort(test, 4)))
     # a = [[4, 2, 6, 7], [6, 7, 8, 1], [4, 5, 4, 2]]
     # b = [[4, 6], [6, 1]]
     # a = turnSquare(a, len(b))
