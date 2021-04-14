@@ -77,16 +77,6 @@ def BogoSort(a):
         random.shuffle(a)
 
 
-def on2(n):
-    d = 1
-    start = time.time_ns()
-    for j in range(0, n):
-        for k in range(0, n):
-            d *= 2
-    end = time.time_ns()
-    return end - start
-
-
 def runningTimeSort(fn, maxIn, nTests):
     times = []
     given = random1dArray(maxIn)
@@ -98,11 +88,12 @@ def runningTimeSort(fn, maxIn, nTests):
 
 
 if __name__ == "__main__":
-    limit = 3000
+    limit = 1000
     inputs = range(0, limit + 1)
-    mTimes = runningTimeSort(mergeSort, limit, 100)
-    bTimes = runningTimeSort(BogoSort, 10, 100)
-    # qTimes = []
+
+    # mTimes = runningTimeSort(mergeSort, limit, 10)
+    bTimes = runningTimeSort(BogoSort, 30, 100)
+    # qTimes = runningTimeSort(quickSort, limit, 10)
     # limit = 10
     # inputs = range(1, limit+1)
     # given = random1dArray(limit)
@@ -112,9 +103,11 @@ if __name__ == "__main__":
     #     bTimes.append(BogoSort(b))
     #     b = given[:i]
     #     # qTimes.append(timeit.timeit(quickSort(b)))
-    plt.plot(inputs, mTimes, "--", label="Merge Sort", color='Green')
-    # plt.plot(range(0, 11), bTimes, "-", label="Bogo Sort", color='Red')
-    plt.legend()
+
+    # plt.plot(inputs, mTimes, "--", label="Merge Sort", color='Green')
+    plt.plot(range(0, 11), bTimes, "-", label="Bogo Sort", color='Red')
+    # plt.legend(inputs, qTimes, "--", label="Quick Sort", color='Blue')
+
     plt.xlabel('Input')
     plt.ylabel('Time(s)')
     plt.title('Running time of BogoSort for different inputs')

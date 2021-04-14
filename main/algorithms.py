@@ -224,11 +224,18 @@ def sort(input):
 
 
 class Node:
-    def __init__(self, value, left, right):
+    def __init__(self, key, parent, left, right):
         self.left = left
         self.right = right
-        self.value = value
+        self.key = key
+        self.parent = parent
 
+    def set_parent(self, parent):
+        self.parent = parent
+
+    def set_key(self, value):
+        self.key = value
+    
     def set_right(self, right):
         self.right = right
 
@@ -304,6 +311,7 @@ def isSortedAsc(a):
     return True
 
 
+
 def bogoSort(a):
     while not isSortedAsc(a):
         random.shuffle(a)
@@ -339,10 +347,6 @@ def radixSort(a, n=10):
     for i in range(0, len(a)):
         result[a[i]%10].append(a[i])
     print(result)
-
-
-def trySortABunch(func, inputs):
-    pass
 
 
 if __name__ == "__main__":
