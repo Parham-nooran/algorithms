@@ -1,5 +1,7 @@
 import math
 import random
+from audioop import reverse
+
 import numpy as np
 
 
@@ -324,36 +326,41 @@ def quickSort(a):
     return quickSort(L) + [mid] + quickSort(R)
 
 
-def random1dArray(n=5):
+def random1dArray(n=5, d=3):
     test = []
     for j in range(0, n):
-        test.append(int(random.random() * 100) + 1)
+        test.append(int(random.random() * 10**d))
     return test
 
 
-def countingSort(a, n=10):
-    buckets = [[] for i in range(0, 10 ** n)]
+def countingSort(a):
+    M = max(a)
+    buckets = [-1 for i in range(0, M+1)]
     for i in range(0, len(a)):
-        buckets[a[i]].append(a[i])
+        buckets[a[i]] = a[i]
     result = []
-    print(buckets)
-    for i in range(0, len(a)):
-        result += buckets[i]
+    for i in range(0, M+1):
+        if buckets[i] != -1:
+            result += [buckets[i]]
     return result
 
 
-def radixSort(a, n=10):
-    result = [[] for i in range(0, 10)]
-    for i in range(0, len(a)):
-        result[a[i]%10].append(a[i])
-    print(result)
+def radixSort(a, d=3, r=10):
+    n = len(a)
+    for j in range(0, d):
+        result = [[] for k in range(0, r)]
+        for i in range(0, n):
+            result[int((a[i] % r**(j+1) - a[i] % r**j)/r**j)].append(a[i])
+        a = []
+        for m in range(0, r):
+            a = a + result[m]
+    return a
 
 
 if __name__ == "__main__":
-    test = random1dArray(10)
+    test = random1dArray(20)
     print(test)
-    print(countingSort(test, 4))
-    print(len(test), len(countingSort(test, 4)))
+    print(countingSort(test))
     # a = [[4, 2, 6, 7], [6, 7, 8, 1], [4, 5, 4, 2]]
     # b = [[4, 6], [6, 1]]
     # a = turnSquare(a, len(b))
