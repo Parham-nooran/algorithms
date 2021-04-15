@@ -237,27 +237,13 @@ class Node:
 
     def set_key(self, value):
         self.key = value
-    
-    def set_right(self, right):
-        self.right = right
 
-    def set_left(self, left):
+    def set_children(self, left=None, right=None):
         self.left = left
+        self.right = right
 
     def print_instance_name(self):
         print(self.__class__.__name__)
-
-
-def search(current, val):
-    if current is None:
-        return None
-    if current.value == val:
-        return current
-    le = search(current.left, val)
-    if le is not None:
-        return le
-    else:
-        return search(current.right, val)
 
 
 def partition(a, p):
@@ -313,7 +299,6 @@ def isSortedAsc(a):
     return True
 
 
-
 def bogoSort(a):
     while not isSortedAsc(a):
         random.shuffle(a)
@@ -357,10 +342,29 @@ def radixSort(a, d=3, r=10):
     return a
 
 
+def search(head, key):
+    if head.key == key:
+        return head
+    elif key < head.key:
+        if head.left != None:
+            return search(head.left, key)
+        else:
+            return None
+    else:
+        if head.right != None:
+            return search(head.right, key)
+        else:
+            return None
+
+
+def insert(key):
+    pass
+
+
 if __name__ == "__main__":
-    test = random1dArray(20)
-    print(test)
-    print(countingSort(test))
+    # test = random1dArray(20)
+    # print(test)
+    # print(countingSort(test))
     # a = [[4, 2, 6, 7], [6, 7, 8, 1], [4, 5, 4, 2]]
     # b = [[4, 6], [6, 1]]
     # a = turnSquare(a, len(b))
@@ -379,18 +383,19 @@ if __name__ == "__main__":
     # print(maxSubArray(A))
     # d = [5, 2, 3, 4, 6, 7, 8]
     # minMult(d)
-    # er = Node(53, None, None)
-    # el = Node(143, None, None)
-    # dr = Node(34, None, None)
-    # dl = Node(143, None, None)
-    # cr = Node(14, None, None)
-    # cl = Node(30, None, None)
-    # br = Node(7, el, er)
-    # bl = Node(42, dl, dr)
-    # ar = Node(43, cl, cr)
-    # al = Node(15, bl, br)
-    # head = Node(22, al, ar)
-    # print(search(head, 7))
+    A = Node(5, None, None, None)
+    B = Node(3, A, None, None)
+    C = Node(7, A, None, None)
+    D = Node(2, B, None, None)
+    E = Node(4, B, None, None)
+    F = Node(8, C, None, None)
+    G = Node(1, D, None, None)
+    H = Node(4.5, E, None, None)
+    A.set_children(B, C)
+    B.set_children(D, E)
+    C.set_children(F)
+    D.set_children(G)
+    E.set_children(None, H)
 
 
     # for i in range(0, 1000):
