@@ -242,6 +242,19 @@ class Node:
         self.left = left
         self.right = right
 
+    def set_left_child(self, left):
+        self.left = left
+
+    def set_right_child(self, right):
+        self.right = right
+
+    def delete(self):
+        if self.parent.left is self:
+            self.parent.left = None
+        elif self.parent.right is self:
+            self.parent.right = None
+        self.parent = None
+
     def print_instance_name(self):
         print(self.__class__.__name__)
 
@@ -357,8 +370,78 @@ def search(head, key):
             return None
 
 
-def insert(key):
-    pass
+def insert(head, key):
+    if head.key == key:
+        return False
+    if key > head.key:
+        if head.right is not None:
+            return insert(head.right, key)
+        temp = Node(key, head, None, None)
+        head.set_children(head.left, temp)
+        return True
+
+    if head.left is not None:
+        return insert(head.left, key)
+    temp = Node(key, head, None, None)
+    head.set_children(temp, head.right)
+    return True
+
+
+def delete(head, key):
+    temp = search(head, key)
+    if temp is not None:
+        deleteNode(temp)
+
+
+def deleteNode(node):
+    if node.left is None or node.right is None:
+        if node.right is not None:
+            node.parent.set_right_child(node.right)
+            node.delete()
+        elif node.left is not None:
+            node.parent.set_left_child(node.right)
+        else:
+            node.delete()
+    else:
+        temp = findImmediateSuccessor(node)
+        node.set_key(temp.key)
+        deleteNode(temp)
+
+
+def findImmediateSuccessor(node):
+    if node.left is None or node.right is None:
+        return False
+    return findSmallestLeft(node.right)
+
+
+def findSmallestLeft(node):
+    if node.left is None:
+        return node
+    return findImmediateSuccessor(node.left)
+
+
+def traversePostOrder(head):
+    if head.left is not None:
+        traversePostOrder(head.left)
+    if head.right is not None:
+        traversePostOrder(head.right)
+    print(head.key)
+
+
+def traverseInOrder(head):
+    if head.left is not None:
+        traversePostOrder(head.left)
+    print(head.key)
+    if head.right is not None:
+        traversePostOrder(head.right)
+
+
+def traversePreOrder(head):
+    print(head.key)
+    if head.left is not None:
+        traversePostOrder(head.left)
+    if head.right is not None:
+        traversePostOrder(head.right)
 
 
 if __name__ == "__main__":
@@ -390,13 +473,20 @@ if __name__ == "__main__":
     E = Node(4, B, None, None)
     F = Node(8, C, None, None)
     G = Node(1, D, None, None)
-    H = Node(4.5, E, None, None)
+    # H = Node(4.5, E, None, None)
     A.set_children(B, C)
     B.set_children(D, E)
     C.set_children(F)
     D.set_children(G)
-    E.set_children(None, H)
+    # E.set_children(None, H)
 
+    print(insert(A, 4.5))
+    print(search(A, 4.5).parent.key)
+    # traversePostOrder(A)
+    # print("/")
+    # traverseInOrder(A)
+    # print("/n")
+    # traversePreOrder(A)
 
     # for i in range(0, 1000):
     #     k = int(random.random()*len(test))
