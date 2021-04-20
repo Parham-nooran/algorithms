@@ -226,7 +226,7 @@ def sort(input):
 
 
 class Node:
-    def __init__(self, key, parent, left, right):
+    def __init__(self, key=0, parent=None, left=None, right=None, color=None):
         self.left = left
         self.right = right
         self.key = key
@@ -331,6 +331,13 @@ def random1dArray(n=5, d=3):
     return test
 
 
+def polarRandom1dArray(n=5, d=3):
+    test = []
+    for j in range(0, n):
+        test.append(int(random.random() * 10**d)-int(random.random() * 10**d))
+    return test
+
+
 def countingSort(a):
     M = max(a)
     buckets = [-1 for i in range(0, M+1)]
@@ -387,7 +394,7 @@ def insert(head, key):
     return True
 
 
-def delete(head, key):
+def deleteFromTree(head, key):
     temp = search(head, key)
     if temp is not None:
         deleteNode(temp)
@@ -395,6 +402,7 @@ def delete(head, key):
 
 def deleteNode(node):
     if node.left is None or node.right is None:
+        print("Something is None")
         if node.right is not None:
             node.parent.set_right_child(node.right)
             node.delete()
@@ -403,19 +411,25 @@ def deleteNode(node):
         else:
             node.delete()
     else:
+        print("Nothing is None")
+        print(node.key)
         temp = findImmediateSuccessor(node)
-        node.set_key(temp.key)
-        deleteNode(temp)
+        if temp is not None:
+            node.set_key(temp.key)
+            deleteNode(temp)
 
 
 def findImmediateSuccessor(node):
     if node.left is None or node.right is None:
-        return False
+        print(node.key)
+        return None
+    print("Nothing is None again")
     return findSmallestLeft(node.right)
 
 
 def findSmallestLeft(node):
     if node.left is None:
+        print(node.key)
         return node
     return findImmediateSuccessor(node.left)
 
@@ -444,6 +458,25 @@ def traversePreOrder(head):
         traversePostOrder(head.right)
 
 
+def maxSubArray(A):
+    n = len(A)
+    current_max = global_max = A[0]
+    startCur = endCur = 0
+    start = end = 0
+    for i in range(1, n):
+        if A[i] > current_max+A[i]:
+            current_max = A[i]
+            startCur = endCur = i
+        else:
+            current_max += A[i]
+            endCur = i
+        if current_max > global_max:
+            global_max = current_max
+            start = startCur
+            end = endCur
+    return global_max, start, end
+
+
 if __name__ == "__main__":
     # test = random1dArray(20)
     # print(test)
@@ -462,26 +495,32 @@ if __name__ == "__main__":
     # test = [20, 14, 52, 16, 37, 8, 23, 13, 64, 43, 76, 32, 21, 12, 4]
     # stoogeSort(test, 0, len(test)-1)
     # print(test)
-    # A = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-    # print(maxSubArray(A))
+    for i in range(0, 100000):
+        given = polarRandom1dArray(20)
+        val, start, end = maxSubArray(given)
+        if val != sum(given[start:end+1]):
+            print("false")
+
     # d = [5, 2, 3, 4, 6, 7, 8]
     # minMult(d)
-    A = Node(5, None, None, None)
-    B = Node(3, A, None, None)
-    C = Node(7, A, None, None)
-    D = Node(2, B, None, None)
-    E = Node(4, B, None, None)
-    F = Node(8, C, None, None)
-    G = Node(1, D, None, None)
-    # H = Node(4.5, E, None, None)
-    A.set_children(B, C)
-    B.set_children(D, E)
-    C.set_children(F)
-    D.set_children(G)
+    # A = Node(5, None, None, None)
+    # B = Node(3, A, None, None)
+    # C = Node(7, A, None, None)
+    # D = Node(2, B, None, None)
+    # E = Node(4, B, None, None)
+    # F = Node(8, C, None, None)
+    # G = Node(1, D, None, None)
+    # # H = Node(4.5, E, None, None)
+    # A.set_children(B, C)
+    # B.set_children(D, E)
+    # C.set_children(F)
+    # D.set_children(G)
     # E.set_children(None, H)
 
-    print(insert(A, 4.5))
-    print(search(A, 4.5).parent.key)
+    # insert(A, 4.5)
+
+    # deleteFromTree(A, 3)
+    # deleteFromTree(A, 5)
     # traversePostOrder(A)
     # print("/")
     # traverseInOrder(A)
