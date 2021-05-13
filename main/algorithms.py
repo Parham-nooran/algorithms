@@ -1,6 +1,6 @@
 import math
 import random
-from audioop import reverse
+from enum import Enum
 
 import numpy as np
 
@@ -182,23 +182,19 @@ def stoogeSort(a, i, j):
         stoogeSort(a, i, j - m)
 
 
-def maxSubArrayNaive(a):
-    maximum = a[0]
-    s = 0
-    e = 0
-    for i in range(0, len(a)):
-        sum = 0
-        for j in range(i, len(a)):
-            sum += a[j]
-            if sum > maximum:
-                maximum = sum
-                s = i
-                e = j
-    return Result(maximum, s, e)
-
-
-def maxSubArray(a):
-    pass
+# def maxSubArrayNaive(a):
+#     maximum = a[0]
+#     s = 0
+#     e = 0
+#     for i in range(0, len(a)):
+#         sum = 0
+#         for j in range(i, len(a)):
+#             sum += a[j]
+#             if sum > maximum:
+#                 maximum = sum
+#                 s = i
+#                 e = j
+#     return Result(maximum, s, e)
 
 
 class Result:
@@ -225,38 +221,12 @@ def sort(input):
                 swap(input, i, j)
 
 
-class Node:
-    def __init__(self, key=0, parent=None, left=None, right=None, color=None):
-        self.left = left
-        self.right = right
-        self.key = key
-        self.parent = parent
+class Color(Enum):
+    RED = 1
+    BLACK = 2
 
-    def set_parent(self, parent):
-        self.parent = parent
-
-    def set_key(self, value):
-        self.key = value
-
-    def set_children(self, left=None, right=None):
-        self.left = left
-        self.right = right
-
-    def set_left_child(self, left):
-        self.left = left
-
-    def set_right_child(self, right):
-        self.right = right
-
-    def delete(self):
-        if self.parent.left is self:
-            self.parent.left = None
-        elif self.parent.right is self:
-            self.parent.right = None
-        self.parent = None
-
-    def print_instance_name(self):
-        print(self.__class__.__name__)
+    def __str__(self):
+        return self.name
 
 
 def partition(a, p):
@@ -273,7 +243,7 @@ def partition(a, p):
 
 
 def chooseRandomPivot(n):
-    return int(random.random()*n)
+    return int(random.random() * n)
 
 
 # def select(a, k):
@@ -294,7 +264,7 @@ def chooseRandomPivot(n):
 #         return select(R, k-len(L)-1)
 def select(a, k):
     if len(a) < 50:
-        return mergeSort(a)[k-1]
+        return mergeSort(a)[k - 1]
     p = chooseRandomPivot(len(a))
     L, mid, R = partition(a, p)
     if len(L) == k:
@@ -302,12 +272,19 @@ def select(a, k):
     elif len(L) > k:
         return select(L, k)
     else:
-        return select(R, k - len(L) -1)
+        return select(R, k - len(L) - 1)
 
 
 def isSortedAsc(a):
-    for i in range(0, len(a)-1):
+    for i in range(0, len(a) - 1):
         if a[i] > a[i + 1]:
+            return False
+    return True
+
+
+def isSortedDesc(a):
+    for i in range(0, len(a) - 1):
+        if a[i] < a[i + 1]:
             return False
     return True
 
@@ -327,24 +304,24 @@ def quickSort(a):
 def random1dArray(n=5, d=3):
     test = []
     for j in range(0, n):
-        test.append(int(random.random() * 10**d))
+        test.append(int(random.random() * 10 ** d))
     return test
 
 
 def polarRandom1dArray(n=5, d=3):
     test = []
     for j in range(0, n):
-        test.append(int(random.random() * 10**d)-int(random.random() * 10**d))
+        test.append(int(random.random() * 10 ** d) - int(random.random() * 10 ** d))
     return test
 
 
 def countingSort(a):
     M = max(a)
-    buckets = [-1 for i in range(0, M+1)]
+    buckets = [-1 for i in range(0, M + 1)]
     for i in range(0, len(a)):
         buckets[a[i]] = a[i]
     result = []
-    for i in range(0, M+1):
+    for i in range(0, M + 1):
         if buckets[i] != -1:
             result += [buckets[i]]
     return result
@@ -355,7 +332,7 @@ def radixSort(a, d=3, r=10):
     for j in range(0, d):
         result = [[] for k in range(0, r)]
         for i in range(0, n):
-            result[int((a[i] % r**(j+1) - a[i] % r**j)/r**j)].append(a[i])
+            result[int((a[i] % r ** (j + 1) - a[i] % r ** j) / r ** j)].append(a[i])
         a = []
         for m in range(0, r):
             a = a + result[m]
@@ -383,14 +360,11 @@ def insert(head, key):
     if key > head.key:
         if head.right is not None:
             return insert(head.right, key)
-        temp = Node(key, head, None, None)
-        head.set_children(head.left, temp)
+        head.right = Node(key, None, head)
         return True
-
     if head.left is not None:
         return insert(head.left, key)
-    temp = Node(key, head, None, None)
-    head.set_children(temp, head.right)
+    head.left = Node(key, None, head)
     return True
 
 
@@ -420,18 +394,15 @@ def deleteNode(node):
 
 
 def findImmediateSuccessor(node):
-    if node.left is None or node.right is None:
-        print(node.key)
+    if node.right is None:
         return None
-    print("Nothing is None again")
     return findSmallestLeft(node.right)
 
 
 def findSmallestLeft(node):
     if node.left is None:
-        print(node.key)
         return node
-    return findImmediateSuccessor(node.left)
+    return findSmallestLeft(node.left)
 
 
 def traversePostOrder(head):
@@ -439,23 +410,28 @@ def traversePostOrder(head):
         traversePostOrder(head.left)
     if head.right is not None:
         traversePostOrder(head.right)
-    print(head.key)
+    print(head)
 
 
 def traverseInOrder(head):
     if head.left is not None:
-        traversePostOrder(head.left)
-    print(head.key)
+        traverseInOrder(head.left)
+    print(head)
     if head.right is not None:
-        traversePostOrder(head.right)
+        traverseInOrder(head.right)
 
 
 def traversePreOrder(head):
-    print(head.key)
+    print(head)
     if head.left is not None:
-        traversePostOrder(head.left)
+        traversePreOrder(head.left)
     if head.right is not None:
-        traversePostOrder(head.right)
+        traversePreOrder(head.right)
+
+
+"""
+    returns the found subArray and the result of the summation
+"""
 
 
 def maxSubArray(A):
@@ -464,7 +440,7 @@ def maxSubArray(A):
     startCur = endCur = 0
     start = end = 0
     for i in range(1, n):
-        if A[i] > current_max+A[i]:
+        if A[i] > current_max + A[i]:
             current_max = A[i]
             startCur = endCur = i
         else:
@@ -474,7 +450,361 @@ def maxSubArray(A):
             global_max = current_max
             start = startCur
             end = endCur
-    return global_max, start, end
+    return global_max, A[start:end + 1]
+
+
+class Vertex:
+    def __init__(self, startTime, finishTime, state, neighbors, key=None):
+        self.key = key
+        self.startTime = startTime
+        self.finishTime = finishTime
+        self.state = state
+        self.neighbors = neighbors
+
+
+class DVertex(Vertex):
+    def __init__(self, toNeighbors, fromNeighbors, startTime, finishTime, state, neighbors):
+        super().__init__(startTime, finishTime, state, neighbors)
+        self.toNeighbors = toNeighbors
+        self.fromNeighbors = fromNeighbors
+
+
+class State(Enum):
+    UNVISITED = 0
+    IN_PROGRESS = 1
+    ALL_DONE = 2
+
+
+def depthFirstSearch(w, currentTime):
+    w.startTime = currentTime
+    currentTime += 1
+    w.state = State.IN_PROGRESS
+    for v in w.neighbors:
+        if v.state == State.UNVISITED:
+            currentTime = depthFirstSearch(v, currentTime)
+            currentTime += 1
+    w.finishTime = currentTime
+    w.state = State.ALL_DONE
+    return currentTime
+
+
+def inplcMergeSort(a, start, end):
+    if end <= start:
+        return a
+    mid = (start + end) // 2
+    inplcMergeSort(a, start, mid)
+    inplcMergeSort(a, mid + 1, end)
+    # print(test[start:mid])
+    # print(test[mid:end])
+    inplcMerge(a, start, end)
+    # print(a[start:end])
+
+
+def inplcMerge(a, start, end):
+    mid = (start + end) // 2
+    start2 = mid + 1
+    while start <= mid and start2 <= end:
+        if a[start] <= a[start2]:
+            start += 1
+        else:
+            val = a[start2]
+            index = start2
+            while index > start:
+                a[index] = a[index - 1]
+                index -= 1
+            a[start] = val
+            start2 += 1
+            start += 1
+            mid += 1
+
+
+def nMergeSort(a, low, high):
+    if high - low <= 1:
+        return a[low:high]
+    mid = (low + high) // 2
+    return merge(nMergeSort(a, low, mid // 2), nMergeSort(a, mid // 2 + 1, mid))
+
+
+def breadthFirstSearch():
+    pass
+
+
+def insertionSort(a):
+    if a[0] > a[1]:
+        a[1], a[0] = a[0], a[1]
+    tail = 1
+    for head in range(2, len(a)):
+        if a[head] < a[tail]:
+            val = a[head]
+            a[head] = a[tail]
+            point = tail
+            while val < a[point] and point >= 0:
+                a[point] = a[point - 1]
+                point -= 1
+            a[point + 1] = val
+        tail += 1
+
+
+def selectionSort(a):
+    for start in range(0, len(a)):
+        minimum = a[start]
+        minI = start
+        for i in range(start, len(a)):
+            if a[i] < minimum:
+                minimum = a[i]
+                minI = i
+        a[start], a[minI] = a[minI], a[start]
+
+
+class Node:
+    def __init__(self, key=0, color=None, parent=None, left=None, right=None):
+        self.left = left
+        self.right = right
+        self.key = key
+        self.parent = parent
+        self.color = color
+
+    def delete(self):
+        if self.parent.left is self:
+            self.parent.left = None
+        elif self.parent.right is self:
+            self.parent.right = None
+        self.parent = None
+
+    def __repr__(self):
+        return f"Key : {self.key} + Color : {self.color}"
+
+    def print_instance_name(self):
+        print(self.__class__.__name__)
+
+    # def set_color(self, color):
+    #     self.color = color
+    #
+    # def set_parent(self, parent):
+    #     self.parent = parent
+    #
+    # def set_key(self, value):
+    #     self.key = value
+
+    # def set_children(self, left=None, right=None):
+    #     if self.color == Color.RED and (left.color == Color.RED or right.color == Color.RED):
+    #         raise TypeError("Red nodes can not have red children")
+    #     else:
+    #         self.left = left
+    #         self.right = right
+
+    # def set_left_child(self, left):
+    #     self.left = left
+    #
+    # def set_right_child(self, right):
+    #     self.right = right
+
+
+def RBTreeInsert(head, value):
+    if value < head.key:
+        if head.left is not None:
+            RBTreeInsert(head.left, value)
+        else:
+            head.left = Node(value, head, None, None, Color.RED if head.Color == Color.BLACK else Color.BLACK)
+    elif value > head.key:
+        if head.right is not None:
+            RBTreeInsert()
+    else:
+        pass
+
+
+def karatsubaMultiplication(x, y, n):
+    if n == 1:
+        return x * y
+    a = x // 10 ** (n // 2)
+    b = x % 10 ** (n // 2)
+    c = y // 10 ** (n // 2)
+    d = y % 10 ** (n // 2)
+    ac = karatsubaMultiplication(a, c, n // 2)
+    bd = karatsubaMultiplication(b, d, n // 2)
+    p = a + b
+    q = c + d
+    pq = karatsubaMultiplication(p, q, n // 2)
+    return 10 ** (n) * ac + 10 ** (n // 2) * (pq - ac - bd) + bd
+
+
+def insertionSortDecreasing(a):
+    for i in range(1, len(a)):
+        if a[i] > a[i - 1]:
+            value = a[i]
+            index = i
+            while index > 0 and value > a[index - 1]:
+                a[index] = a[index - 1]
+                index -= 1
+            a[index] = value
+
+
+def union(a, b):
+    result = []
+    aIndex = 0
+    bIndex = 0
+    while aIndex < len(a) and bIndex < len(b):
+        if len(result) > 0:
+            if a[aIndex] == result[len(result) - 1]:
+                aIndex += 1
+                continue
+            if b[bIndex] == result[len(result) - 1]:
+                bIndex += 1
+                continue
+        if a[aIndex] <= b[bIndex]:
+            result.append(a[aIndex])
+        elif a[aIndex] > b[bIndex]:
+            result.append(b[bIndex])
+    while aIndex < len(a):
+        if len(result) > 0 and a[aIndex] == result[len(result) - 1]:
+            aIndex += 1
+            continue
+        result.append(a[aIndex])
+        aIndex += 1
+    while bIndex < len(b):
+        if len(result) > 0 and b[bIndex] == result[len(result) - 1]:
+            bIndex += 1
+            continue
+        result.append(b[bIndex])
+        bIndex += 1
+    return result
+
+
+def intersection(a, b):
+    aIndex = 0
+    bIndex = 0
+    result = []
+    while aIndex < len(a) and bIndex < len(b):
+        while aIndex < len(a) and a[aIndex] < b[bIndex]:
+            aIndex += 1
+        if aIndex >= len(a):
+            break
+        while bIndex < len(b) and b[bIndex] < a[aIndex]:
+            bIndex += 1
+        if bIndex >= len(b):
+            break
+        if a[aIndex] == b[bIndex]:
+            result.append(a[aIndex])
+            while aIndex < len(a) and a[aIndex] == result[len(result) - 1]:
+                aIndex += 1
+            while bIndex < len(b) and b[bIndex] == result[len(result) - 1]:
+                bIndex += 1
+    return result
+
+
+def inplacePartition(a, p):
+    i = 0
+    while i < p:
+        if a[i] > a[p]:
+            val = a[i]
+            for j in range(i, p):
+                a[j] = a[j + 1]
+            a[p] = val
+            p -= 1
+        else:
+            i += 1
+        print(a)
+    i = p + 1
+    while i < len(a):
+        if a[i] < a[p]:
+            val = a[i]
+            for j in range(i, p, -1):
+                a[j] = a[j - 1]
+            a[p] = val
+            p += 1
+        else:
+            i += 1
+        print(a)
+
+
+def findRightest(head):
+    if head.right is None:
+        return head
+    return findRightest(head.right)
+
+
+def B(x):
+    if x is None:
+        return 0
+    if x.left is not None:
+        return B(x.left) + (1 if x.color is Color.BLACK else 0)
+    if x.right is not None:
+        return B(x.right) + (1 if x.color is Color.BLACK else 0)
+    return 1 if x.color is Color.BLACK else 0
+
+
+def changeColorDownward(head, color):
+    if head is None or head.color == color:
+        return True
+    head.color = color
+    changeColorDownward(head.left, color.RED if color is Color.BLACK else Color.RED)
+    changeColorDownward(head.right, color.RED if color is Color.BLACK else Color.RED)
+
+
+def changeColor(head, color):
+    # print("Change ", head, "to ", color)
+    if head is None or head.color == color:
+        return True
+    if head.parent is None and color is Color.BLACK:
+        head.color = color
+        return True
+    if head.parent is None and color is Color.RED:
+        temp = findImmediateSuccessor(head)
+        if temp is None:
+            head.parent = head.left
+            findRightest(head.left).right = head
+            global A
+            A = head.left
+            A.parent = None
+            A.right.left = None
+            changeColorDownward(head.left, Color.RED if A.right.color is Color.BLACK else Color.BLACK)
+            changeColorDownward(head.right, Color.RED if A.right.color is Color.BLACK else Color.BLACK)
+        else:
+            temp.left = head
+            head.parent = temp
+            A = head.right
+            A.parent = None
+            head.right = None
+        changeColor(head, color)
+        changeColorDownward(head.left, Color.RED if head.color is Color.BLACK else Color.BLACK)
+        changeColorDownward(head.right, Color.RED if head.color is Color.BLACK else Color.BLACK)
+    if head.parent.color is Color.RED and color is Color.RED:
+        changeColor(head.parent, Color.BLACK)
+    changeColor(head.parent, Color.RED if color is Color.BLACK else Color.BLACK)
+    head.color = color
+    return True
+
+
+def RBInsert(head, value):
+    if head is None or head.key == value:
+        return False
+    if value < head.key:
+        if head.left is not None:
+            return RBInsert(head.left, value)
+
+        if B(head.left) < B(head.right):
+            head.left = Node(value, Color.BLACK, head)
+            return True
+        if head.color is not Color.BLACK:
+            changeColor(head, Color.BLACK)
+            changeColor(head.right, Color.RED)
+        head.left = Node(value, Color.RED if \
+            # head.color is not Color.RED and \
+            B(head.left) >= B(head.right) else Color.BLACK, head)
+        return True
+
+    if head.right is not None:
+        return RBInsert(head.right, value)
+    if B(head.left) > B(head.right):
+        head.right = Node(value, Color.BLACK, head)
+        return True
+    if head.color is not Color.BLACK:
+        changeColor(head, Color.BLACK)
+        changeColor(head.left, Color.RED)
+    head.right = Node(value, Color.RED if \
+        # head.color is not Color.RED and \
+        B(head.left) <= B(head.right) else Color.BLACK, head)
+    return True
 
 
 if __name__ == "__main__":
@@ -492,25 +822,71 @@ if __name__ == "__main__":
     # given = [[0, 1, math.inf, 1, 5], [9, 0, 3, 2, math.inf], [math.inf, math.inf, 0, 4, math.inf],
     #          [math.inf, math.inf, 2, 0, 3], [3, math.inf, math.inf, math.inf, 0]]
     # shortestPath(given)
-    # test = [20, 14, 52, 16, 37, 8, 23, 13, 64, 43, 76, 32, 21, 12, 4]
+    # for i in range(0, 100):
+    #     test = random1dArray(10)
+    #     # print(test)
+    #     insertionSortDecreasing(test)
+    #     # print(test)
+    #     # print(isSortedDesc(test))
+    #     if not isSortedDesc(test):
+    #         print(f"{i}", test)
+    # a = [1, 3, 4, 6, 7]
+    # b = [1, 1, 1, 1, 2, 2, 2, 2, 8, 12, 13]
+    # print(intersection(a, b))
+    # for i in range(0, 1000):
+    #     test = random1dArray(100)
+    #     selectionSort(test)
+    #     if not isSortedAsc(test):
+    #         print(test)
+    # print(isSortedAsc(selectionSort(test)))
+    #
+    # test = [15, 12, 2, 4, 7, 9, 1, 20, 14, 52, 6, 3, 5, 2]
+    # print(test)
+    # inplacePartition(test, 10)
+    # print(test)
+    # for i in range(9, 0, -1):
+    #     print(i)
+    # insertionSort(test1)
+    # print(test1)
+    # for i in range(0, 10):
+    #     test = random1dArray(100)
+    #     insertionSort(test)
+    #     if not isSortedAsc(test):
+    #         print(test)
     # stoogeSort(test, 0, len(test)-1)
     # print(test)
-    for i in range(0, 100000):
-        given = polarRandom1dArray(20)
-        val, start, end = maxSubArray(given)
-        if val != sum(given[start:end+1]):
-            print("false")
+    # given = polarRandom1dArray(10)
+    # a = radixSort(given, 10)
+    # print(a)
+    # print(maxSubArray(a))
 
-    # d = [5, 2, 3, 4, 6, 7, 8]
-    # minMult(d)
-    # A = Node(5, None, None, None)
+    global A
+    A = Node(5, Color.BLACK)
+    test = [3, 2, 8, 19, 23, 12]
+    for i in test:
+        RBInsert(A, i)
+        print("Head is : ", A)
+        traverseInOrder(A)
+    print(B(A))
+    # print()
+    # traversePreOrder(A)
+    # print()
+    # traversePostOrder(A)
+    # print(A, A.left, A.left.left, A.right, A.right.right, A.right.right.left, A.right.right.right)
+    # print(A, A.color)
+    # print(A.right, A.right.color)
+    # print(A.left, A.left.color)
+    # x = 3141592653589793238462643383279502884197169399375105820974944592
+    # y = 2718281828459045235360287471352662497757247093699959574966967627
+    # # print(karatsubaMultiplication(x, y, 64))
+    # print(x*y == karatsubaMultiplication(x, y, 64))
     # B = Node(3, A, None, None)
     # C = Node(7, A, None, None)
     # D = Node(2, B, None, None)
     # E = Node(4, B, None, None)
     # F = Node(8, C, None, None)
     # G = Node(1, D, None, None)
-    # # H = Node(4.5, E, None, None)
+    # H = Node(4.5, E, None, None)
     # A.set_children(B, C)
     # B.set_children(D, E)
     # C.set_children(F)
@@ -533,7 +909,6 @@ if __name__ == "__main__":
     #         print(select(test, k), mergeSort(test)[k-1])
     #         print(test)
     #         print(mergeSort(test))
-
 
     # for i in range(0, 10):
     #     rand = int(random.random()*len(test))
