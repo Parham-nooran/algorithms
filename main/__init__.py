@@ -11,6 +11,7 @@ def fillBinary():
             for j in range(0, 8):
                 c = c + str(int(2 * random.random()))
             file.write(c+" \n")
+        file.write("\n  ")
 
 
 def readIntFile():
