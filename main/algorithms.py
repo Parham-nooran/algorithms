@@ -1292,57 +1292,124 @@ def Prim():
     pass
 
 
-def Kruskal():
-    pass
+class G:
+    def __init__(self, V, E):
+        self.V = V
+        self.E = E
 
 
-def allPossibleSums(a, m, b):
-    n = len(a)
-    result = [[[] for j in range(n)] for k in range(n)]
-    costs = [[[] for j in range(n)] for k in range(n)]
-    result[0][0] = [a[0]]
-    costs[0][0] = [b[0]]
-    for i in range(n - 1):
-        # print(result[i], "m,")
-        for j in range(i + 1):
-            # print(result[i][j])
-            for l in range(i + 1):
-                for k in range(len(result[l][j])):
-                    result[i + 1][j].append(result[l][j][k]+a[i + 1])
-                    costs[i+1][j].append(costs[l][j][k]+b[i+1])
-        costs[i + 1][i + 1] = [b[i+1]]
-        result[i + 1][i + 1] = [a[i + 1]]
-    print(result)
-    print(costs)
-    minimum = math.inf
-    for i in range(n):
-        for j in range(i+1):
-            for k in range(len(result[i][j])):
-                if result[i][j][k] >= m and costs[i][j][k] < minimum:
-                    minimum = costs[i][j][k]
-    return minimum
+class Edge:
+    def __init__(self, weight, source, destination):
+        self.weight = weight
+        self.source = source
+        self.destination = destination
 
 
-if __name__ == '__main__':
-    t = int(input())
-    for i in range(t):
-        n, m = map(int, input().split())
-        a = list(map(int, input().split()))
-        b = list(map(int, input().split()))
-        # print(n, m, a, b)
-        print(allPossibleSums(a, m, b))
+class Vertex:
+    def __init__(self, value, name=None):
+        self.value = value
+        self.name = name
 
 
-## Salesperson
-# if __name__ == "__main__":
+def Kruskal(G):
+    V = G.V
+    E = G.E
+    V = sorted(V)
+    trees = []
+    MST = set(())
+    for v in V:
+        trees.append({v})
+    for e in E:
+        if not MST.__contains__(e):
+            MST.add(e)
+            print(trees.__contains__({v}))
+# def allPossibleSums(a, m, b):
+#     n = len(a)
+#     result = [[[] for j in range(n)] for k in range(n)]
+#     costs = [[[] for j in range(n)] for k in range(n)]
+#     result[0][0] = [a[0]]
+#     costs[0][0] = [b[0]]
+#     for i in range(n - 1):
+#         # print(result[i], "m,")
+#         for j in range(i + 1):
+#             # print(result[i][j])
+#             for l in range(i + 1):
+#                 for k in range(len(result[l][j])):
+#                     result[i + 1][j].append(result[l][j][k]+a[i + 1])
+#                     costs[i+1][j].append(costs[l][j][k]+b[i+1])
+#         costs[i + 1][i + 1] = [b[i+1]]
+#         result[i + 1][i + 1] = [a[i + 1]]
+#     # print(result)
+#     # print(costs)
+#     minimum = math.inf
+#     for i in range(n):
+#         for j in range(i+1):
+#             for k in range(len(result[i][j])):
+#                 if result[i][j][k] >= m and costs[i][j][k] < minimum:
+#                     minimum = costs[i][j][k]
+#     if minimum == math.inf:
+#         minimum = -1
+#     return minimum
+#
+#
+# if __name__ == '__main__':
+#     t = int(input())
+#     for i in range(t):
+#         n, m = map(int, input().split())
+#         a = list(map(int, input().split()))
+#         b = list(map(int, input().split()))
+#         # print(n, m, a, b)
+#         print(allPossibleSums(a, m, b))
+
+
+def scheduling(arrival, dep):
+    n = len(arrival)
+    lastFinish = dep[0]
+    maximum = 1
+    for i in range(1, n):
+        count = 1
+        if arrival[i] >= lastFinish:
+            lastFinish = dep[i]
+        else:
+            count += count
+            minFinish = min(lastFinish, dep[i])
+            while i < n - 1 and arrival[i+1] < lastFinish:
+                if arrival[i+1] < minFinish:
+                    minFinish = min(minFinish, dep[i+1])
+                    count += 1
+                else:
+                    minFinish = dep[i + 1]
+                i += 1
+        maximum = max(count, maximum)
+    return maximum
+
+
+
+if __name__ == "__main__":
+    arrival = [9, 9+(4/6), 9+(5/6), 11, 15, 18]
+    dep = [9+(1/6), 12, 11+(2/6), 11+(3/6), 19, 20]
+    # arrival = [1, 2, 4, 5, 7, 8, 10, 11, 15, 18]
+    # dep = [3, 6, 12, 9, 13, 14, 17, 16, 19, 20]
+    print(scheduling(arrival, dep))
+
+
+    # temp = G([], [])
     # vals = [45, 13, 12, 16, 5, 9]
     # nodes = []
+    # v1 = Vertex(3)
+    # v2 = Vertex(4)
+    # test = [{v1}, {v2}]
+    # print(test.__contains__({v1}), test.__contains__({v1, v2}))
+    # test.__add__([{v1, v2}])
+    # print(test.__contains__({v1, v2}))
+    # values = {1, 3, 4, 2, 6}
+
     # for i in range(len(vals)):
     #     nodes.append(HTVertex(vals[i]))
     # current = Huffman_coding(nodes)
     # printTree(current)
     # allPossibleSums([5, 3, 7, 9, 4], 2)
-    allPossibleSums([5, 3, 2, 1, 4], 7, [2, 1, 1, 2, 1])
+    # allPossibleSums([5, 3, 2, 1, 4], 7, [2, 1, 1, 2, 1])
     # maxProfit([2, 4, 6, 8, 1, 5, 7, 3])
     # print(maxProfit([2, 4, 6, 2, 5]))
     # print(alphaProperty([10, 22, 9, 33, 49, 50, 31, 60]))
@@ -1392,125 +1459,125 @@ if __name__ == '__main__':
     #       [math.inf, math.inf, math.inf, 6, 0]]
     # print(np.array(W))
     # Floyd(W)
-# print(dijkstra())
-# test = random1dArray(20)
-# print(test)
-# print(countingSort(test))
-# a = [[4, 2, 6, 7], [6, 7, 8, 1], [4, 5, 4, 2]]
-# b = [[4, 6], [6, 1]]
-# a = turnSquare(a, len(b))
-# b = turnSquare(b, len(a))
-# if len(a) != len(b):
-#     exit(-1)
-# print(strassen(a, b))
-# print(fibo(15))
-# given = [[0, 1, math.inf, 1, 5], [9, 0, 3, 2, math.inf], [math.inf, math.inf, 0, 4, math.inf],
-#          [math.inf, math.inf, 2, 0, 3], [3, math.inf, math.inf, math.inf, 0]]
-# shortestPath(given)
-# for i in range(0, 100):
-#     test = random1dArray(10)
-#     # print(test)
-#     insertionSortDecreasing(test)
-#     # print(test)
-#     # print(isSortedDesc(test))
-#     if not isSortedDesc(test):
-#         print(f"{i}", test)
-# print(beautifulArray(4))
-# a = [1, 3, 4, 6, 7]
-# b = [1, 1, 1, 1, 2, 2, 2, 2, 8, 12, 13]
-# print(intersection(a, b))
-# for i in range(0, 1000):
-#     test = random1dArray(100)
-#     selectionSort(test)
-#     if not isSortedAsc(test):
-#         print(test)
-# print(isSortedAsc(selectionSort(test)))
-#
-# for i in range(0, 100):
-#     test = random1dArray(20)
-#     quickSort_inplace(test, 0, len(test))
-#     if not isSortedAsc(test):
-#         print(test)
-# test = [15, 12, 2, 4, 7, 9, 1, 20, 14, 52, 6, 3, 5, 2]
-# # test = [4, 2, 9, 7, 5, 6]
-# print(test)
-# halfMergeSort(test, 0, len(test))
-# print(test)
-# a = [1, 4, 7, 9, 5, 6, 12, 17]
-# print(a)
-# inplcMerge(a, 0, len(a))
-# print(a)
-# quickSort_inplace(test, 0, len(test))
-# print(test)
-# inplacePartition(test, 10)
-# print(test)
-# for i in range(9, 0, -1):
-#     print(i)
-# insertionSort(test1)
-# print(test1)
-# for i in range(0, 10):
-#     test = random1dArray(100)
-#     insertionSort(test)
-#     if not isSortedAsc(test):
-#         print(test)
-# stoogeSort(test, 0, len(test)-1)
-# print(test)
-# given = polarRandom1dArray(10)
-# a = radixSort(given, 10)
-# print(a)
-# print(maxSubArray(a))
+    # print(dijkstra())
+    # test = random1dArray(20)
+    # print(test)
+    # print(countingSort(test))
+    # a = [[4, 2, 6, 7], [6, 7, 8, 1], [4, 5, 4, 2]]
+    # b = [[4, 6], [6, 1]]
+    # a = turnSquare(a, len(b))
+    # b = turnSquare(b, len(a))
+    # if len(a) != len(b):
+    #     exit(-1)
+    # print(strassen(a, b))
+    # print(fibo(15))
+    # given = [[0, 1, math.inf, 1, 5], [9, 0, 3, 2, math.inf], [math.inf, math.inf, 0, 4, math.inf],
+    #          [math.inf, math.inf, 2, 0, 3], [3, math.inf, math.inf, math.inf, 0]]
+    # shortestPath(given)
+    # for i in range(0, 100):
+    #     test = random1dArray(10)
+    #     # print(test)
+    #     insertionSortDecreasing(test)
+    #     # print(test)
+    #     # print(isSortedDesc(test))
+    #     if not isSortedDesc(test):
+    #         print(f"{i}", test)
+    # print(beautifulArray(4))
+    # a = [1, 3, 4, 6, 7]
+    # b = [1, 1, 1, 1, 2, 2, 2, 2, 8, 12, 13]
+    # print(intersection(a, b))
+    # for i in range(0, 1000):
+    #     test = random1dArray(100)
+    #     selectionSort(test)
+    #     if not isSortedAsc(test):
+    #         print(test)
+    # print(isSortedAsc(selectionSort(test)))
+    #
+    # for i in range(0, 100):
+    #     test = random1dArray(20)
+    #     quickSort_inplace(test, 0, len(test))
+    #     if not isSortedAsc(test):
+    #         print(test)
+    # test = [15, 12, 2, 4, 7, 9, 1, 20, 14, 52, 6, 3, 5, 2]
+    # # test = [4, 2, 9, 7, 5, 6]
+    # print(test)
+    # halfMergeSort(test, 0, len(test))
+    # print(test)
+    # a = [1, 4, 7, 9, 5, 6, 12, 17]
+    # print(a)
+    # inplcMerge(a, 0, len(a))
+    # print(a)
+    # quickSort_inplace(test, 0, len(test))
+    # print(test)
+    # inplacePartition(test, 10)
+    # print(test)
+    # for i in range(9, 0, -1):
+    #     print(i)
+    # insertionSort(test1)
+    # print(test1)
+    # for i in range(0, 10):
+    #     test = random1dArray(100)
+    #     insertionSort(test)
+    #     if not isSortedAsc(test):
+    #         print(test)
+    # stoogeSort(test, 0, len(test)-1)
+    # print(test)
+    # given = polarRandom1dArray(10)
+    # a = radixSort(given, 10)
+    # print(a)
+    # print(maxSubArray(a))
 
-# global A
-# A = Node(5, Color.BLACK)
-# test = [3, 2, 8, 19, 23, 12]
-# for i in test:
-#     RBInsert(A, i)
-#     print("Head is : ", A)
-#     traverseInOrder(A)
-# print(B(A))
-# print()
-# traversePreOrder(A)
-# print()
-# traversePostOrder(A)
-# print(A, A.left, A.left.left, A.right, A.right.right, A.right.right.left, A.right.right.right)
-# print(A, A.color)
-# print(A.right, A.right.color)
-# print(A.left, A.left.color)
-# x = 3141592653589793238462643383279502884197169399375105820974944592
-# y = 2718281828459045235360287471352662497757247093699959574966967627
-# # print(karatsubaMultiplication(x, y, 64))
-# print(x*y == karatsubaMultiplication(x, y, 64))
-# B = Node(3, A, None, None)
-# C = Node(7, A, None, None)
-# D = Node(2, B, None, None)
-# E = Node(4, B, None, None)
-# F = Node(8, C, None, None)
-# G = Node(1, D, None, None)
-# H = Node(4.5, E, None, None)
-# A.set_children(B, C)
-# B.set_children(D, E)
-# C.set_children(F)
-# D.set_children(G)
-# E.set_children(None, H)
+    # global A
+    # A = Node(5, Color.BLACK)
+    # test = [3, 2, 8, 19, 23, 12]
+    # for i in test:
+    #     RBInsert(A, i)
+    #     print("Head is : ", A)
+    #     traverseInOrder(A)
+    # print(B(A))
+    # print()
+    # traversePreOrder(A)
+    # print()
+    # traversePostOrder(A)
+    # print(A, A.left, A.left.left, A.right, A.right.right, A.right.right.left, A.right.right.right)
+    # print(A, A.color)
+    # print(A.right, A.right.color)
+    # print(A.left, A.left.color)
+    # x = 3141592653589793238462643383279502884197169399375105820974944592
+    # y = 2718281828459045235360287471352662497757247093699959574966967627
+    # # print(karatsubaMultiplication(x, y, 64))
+    # print(x*y == karatsubaMultiplication(x, y, 64))
+    # B = Node(3, A, None, None)
+    # C = Node(7, A, None, None)
+    # D = Node(2, B, None, None)
+    # E = Node(4, B, None, None)
+    # F = Node(8, C, None, None)
+    # G = Node(1, D, None, None)
+    # H = Node(4.5, E, None, None)
+    # A.set_children(B, C)
+    # B.set_children(D, E)
+    # C.set_children(F)
+    # D.set_children(G)
+    # E.set_children(None, H)
 
-# insert(A, 4.5)
+    # insert(A, 4.5)
 
-# deleteFromTree(A, 3)
-# deleteFromTree(A, 5)
-# traversePostOrder(A)
-# print("/")
-# traverseInOrder(A)
-# print("/n")
-# traversePreOrder(A)
+    # deleteFromTree(A, 3)
+    # deleteFromTree(A, 5)
+    # traversePostOrder(A)
+    # print("/")
+    # traverseInOrder(A)
+    # print("/n")
+    # traversePreOrder(A)
 
-# for i in range(0, 1000):
-#     k = int(random.random()*len(test))
-#     if select(test, k) != mergeSort(test)[k-1]:
-#         print(select(test, k), mergeSort(test)[k-1])
-#         print(test)
-#         print(mergeSort(test))
+    # for i in range(0, 1000):
+    #     k = int(random.random()*len(test))
+    #     if select(test, k) != mergeSort(test)[k-1]:
+    #         print(select(test, k), mergeSort(test)[k-1])
+    #         print(test)
+    #         print(mergeSort(test))
 
-# for i in range(0, 10):
-#     rand = int(random.random()*len(test))
-#     print(mergeSort(test)[rand], select(test, rand))
-#     print(mergeSort(test))
+    # for i in range(0, 10):
+    #     rand = int(random.random()*len(test))
+    #     print(mergeSort(test)[rand], select(test, rand))
+    #     print(mergeSort(test))
