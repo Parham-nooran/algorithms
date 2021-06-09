@@ -1048,10 +1048,13 @@ def Floyd(W):
 # vertices = []
 
 
-class Vertex:
+class Vertex2P:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
+    def __repr__(self):
+        return f"X( or i) : {self.x}, Y(or j) : {self.y}"
 
 
 def getInputs():
@@ -1464,26 +1467,38 @@ class GVertex:
 
 def blockChoicePossibilities(scores):
     n = len(scores)
-    result = [[0 for i in range(n+1)] for j in range(n+1)]
-
+    marshallScores = [[0 for i in range(n+1)] for j in range(n+1)]
+    # paths = [[0 for i in range(n+1)] for j in range(n+1)]
+    paths = []
     for i in range(n):
-        for j in range(n-i):
-            if i > j :
-                result[i][j] = result[][] * ((i+j)%2)
-            elif i < j:
-                result[i][j] = result[][] * ()
-            elif i == j:
-                result[i][j] = result[][] * ()
-
+        marshallScores[0][i+1] = marshallScores[0][i] + scores[n-i-1] * ((i+1) % 2)
+        marshallScores[i+1][0] = marshallScores[i][0] + scores[i] * ((i+1) % 2)
+    for i in range(1, n+1):
+        for j in range(1, n-i+1):
+            if i < j:
+                marshallScores[i][j] = marshallScores[i][j-1] + scores[n-j] * ((i+j) % 2)
+            elif i > j:
+                marshallScores[i][j] = marshallScores[i-1][j] + scores[i] * ((i+j) % 2)
+            else:
+                if marshallScores[i-1][j] >= marshallScores[i][j-1]:
+                    marshallScores[i][j] = marshallScores[i-1][j]
+                    paths.append(Vertex2P(i-1, j))
+                    # paths[i-1][j] = (i+j)//2
+                else:
+                    marshallScores[i][j] = marshallScores[i][j-1]
+                    paths.append(Vertex2P(i, j-1))
+                    # paths[i][j-1] = (i+j)//2
+    print(np.array(marshallScores))
+    print(np.array(paths))
 
 
 if __name__ == "__main__":
-    # arrival = [9, 9+(4/6), 9+(5/6), 11, 15, 18]
-    # dep = [9+(1/6), 12, 11+(2/6), 11+(3/6), 19, 20]
-    arrival = [1, 2, 4, 5, 7, 8, 10, 11, 15, 18]
-    dep = [3, 6, 12, 9, 13, 14, 17, 16, 19, 20]
-    print(scheduling(arrival, dep))
-
+    # # arrival = [9, 9+(4/6), 9+(5/6), 11, 15, 18]
+    # # dep = [9+(1/6), 12, 11+(2/6), 11+(3/6), 19, 20]
+    # arrival = [1, 2, 4, 5, 7, 8, 10, 11, 15, 18]
+    # dep = [3, 6, 12, 9, 13, 14, 17, 16, 19, 20]
+    # print(scheduling(arrival, dep))
+    blockChoicePossibilities([5, 7, 3, 4, 4, 6])
 
 
     # n = 5
