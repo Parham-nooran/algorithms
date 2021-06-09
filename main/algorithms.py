@@ -1045,7 +1045,7 @@ def Floyd(W):
     print("d : ", np.array(d))
 
 
-vertices = []
+# vertices = []
 
 
 class Vertex:
@@ -1323,35 +1323,37 @@ def Kruskal(G):
         if not MST.__contains__(e):
             MST.add(e)
             print(trees.__contains__({v}))
-# def allPossibleSums(a, m, b):
-#     n = len(a)
-#     result = [[[] for j in range(n)] for k in range(n)]
-#     costs = [[[] for j in range(n)] for k in range(n)]
-#     result[0][0] = [a[0]]
-#     costs[0][0] = [b[0]]
-#     for i in range(n - 1):
-#         # print(result[i], "m,")
-#         for j in range(i + 1):
-#             # print(result[i][j])
-#             for l in range(i + 1):
-#                 for k in range(len(result[l][j])):
-#                     result[i + 1][j].append(result[l][j][k]+a[i + 1])
-#                     costs[i+1][j].append(costs[l][j][k]+b[i+1])
-#         costs[i + 1][i + 1] = [b[i+1]]
-#         result[i + 1][i + 1] = [a[i + 1]]
-#     # print(result)
-#     # print(costs)
-#     minimum = math.inf
-#     for i in range(n):
-#         for j in range(i+1):
-#             for k in range(len(result[i][j])):
-#                 if result[i][j][k] >= m and costs[i][j][k] < minimum:
-#                     minimum = costs[i][j][k]
-#     if minimum == math.inf:
-#         minimum = -1
-#     return minimum
-#
-#
+
+
+def allPossibleSums(a, m, b):
+    n = len(a)
+    result = [[[] for j in range(n)] for k in range(n)]
+    costs = [[[] for j in range(n)] for k in range(n)]
+    result[0][0] = [a[0]]
+    costs[0][0] = [b[0]]
+    for i in range(n - 1):
+        # print(result[i], "m,")
+        for j in range(i + 1):
+            # print(result[i][j])
+            for l in range(i + 1):
+                for k in range(len(result[l][j])):
+                    result[i + 1][j].append(result[l][j][k]+a[i + 1])
+                    costs[i+1][j].append(costs[l][j][k]+b[i+1])
+        costs[i + 1][i + 1] = [b[i+1]]
+        result[i + 1][i + 1] = [a[i + 1]]
+    # print(result)
+    # print(costs)
+    minimum = math.inf
+    for i in range(n):
+        for j in range(i+1):
+            for k in range(len(result[i][j])):
+                if result[i][j][k] >= m and costs[i][j][k] < minimum:
+                    minimum = costs[i][j][k]
+    if minimum == math.inf:
+        minimum = -1
+    return minimum
+
+
 # if __name__ == '__main__':
 #     t = int(input())
 #     for i in range(t):
@@ -1384,13 +1386,118 @@ def scheduling(arrival, dep):
     return maximum
 
 
+class Time:
+    def __init__(self, hour=0, minute=0, second=0):
+        self.hour = hour
+        self.minute = minute
+        self.second = second
+
+    def __repr__(self):
+        return f"Hour: {self.hour}, Minute: {self.minute}, Second : {self.second}"
+
+    def compare(self, other):
+        return self.hour*360+self.minute*60+self.second - other.hour*360+other.minute*60+other.second
+
+
+def WScheduling(arrival, dep):
+    n = len(arrival)
+    lastFinish = dep[0]
+    maximum = 1
+    for i in range(1, n):
+        count = 1
+        if arrival[i].compare(lastFinish) >= 0:
+            lastFinish = dep[i]
+        else:
+            count += count
+            minFinish = tmin(lastFinish, dep[i])
+            while i < n - 1 and arrival[i+1] < lastFinish:
+                if arrival[i+1].compare(minFinish) < 0:
+                    minFinish = tmin(minFinish, dep[i+1])
+                    count += 1
+                else:
+                    minFinish = dep[i + 1]
+                i += 1
+        maximum = max(count, maximum)
+    return maximum
+
+
+def tmin(t1, t2):
+    return t1 if t1.compare(t2) <= 0 else t2
+
+
+def graphColoring(V):
+    s = 0
+    V[s].color = 1
+    colors = {1}
+    current = V[s]
+    while current is not None:
+        neighbors = current.adj
+        nextCurrent = None
+        adjColors = set(list())
+        for v in neighbors:
+            if v.color is not None:
+                adjColors.add(v.color)
+            else:
+                nextCurrent = v
+        if len(colors) == len(adjColors):
+            current.color = max(colors) + 1
+            colors.add(current.color)
+        else:
+            current.color = list((colors - adjColors))[0]
+        current = nextCurrent
+    return len(colors)
+
+
+class GVertex:
+    def __init__(self, adj=None, color=None):
+        if adj is None:
+            adj = set([])
+        self.color = color
+        self.adj = adj
+
+    def addVertex(self, vertex):
+        self.adj.add(vertex)
+
+    def __repr__(self):
+        return f"color : {self.color}"
+
+
+def blockChoicePossibilities(scores):
+    n = len(scores)
+    result = [[0 for i in range(n+1)] for j in range(n+1)]
+
+    for i in range(n):
+        for j in range(n-i):
+            if i > j :
+                result[i][j] = result[][] * ((i+j)%2)
+            elif i < j:
+                result[i][j] = result[][] * ()
+            elif i == j:
+                result[i][j] = result[][] * ()
+
+
 
 if __name__ == "__main__":
-    arrival = [9, 9+(4/6), 9+(5/6), 11, 15, 18]
-    dep = [9+(1/6), 12, 11+(2/6), 11+(3/6), 19, 20]
-    # arrival = [1, 2, 4, 5, 7, 8, 10, 11, 15, 18]
-    # dep = [3, 6, 12, 9, 13, 14, 17, 16, 19, 20]
+    # arrival = [9, 9+(4/6), 9+(5/6), 11, 15, 18]
+    # dep = [9+(1/6), 12, 11+(2/6), 11+(3/6), 19, 20]
+    arrival = [1, 2, 4, 5, 7, 8, 10, 11, 15, 18]
+    dep = [3, 6, 12, 9, 13, 14, 17, 16, 19, 20]
     print(scheduling(arrival, dep))
+
+
+
+    # n = 5
+    # vertices = []
+    # for i in range(n):
+    #     vertices.append(GVertex())
+    # for i in range(1, n-1):
+    #     vertices[i].addVertex(vertices[i+1])
+    #     vertices[i+1].addVertex(vertices[i])
+    #     vertices[i].addVertex(vertices[i-1])
+    #     vertices[i-1].addVertex(vertices[i])
+    # vertices[0].addVertex(vertices[len(vertices)-1])
+    # vertices[len(vertices)-1].addVertex(vertices[0])
+    # print(graphColoring(vertices))
 
 
     # temp = G([], [])
